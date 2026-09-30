@@ -1,0 +1,230 @@
+{
+  "model": "gpt-4o-mini",
+  "results": [
+    {
+      "id": "E01",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.765,
+      "reasoning": "The answer correctly states the maximum wireless charging power of the PulsePhone X as 15 W and confirms that it does not come with a charger in the box, fully aligning with the reference answer."
+    },
+    {
+      "id": "E02",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.611,
+      "reasoning": "The answer correctly states the cost of an OrbitPlus membership as USD 49 annually, fully addressing the question without any errors or omissions."
+    },
+    {
+      "id": "E03",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.726,
+      "reasoning": "The answer is correct, complete, and adheres to policy guidelines, accurately reflecting the shipping time frame without any errors or omissions."
+    },
+    {
+      "id": "E04",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.689,
+      "reasoning": "The answer correctly states the warranty duration of the AeroBuds Pro as 12 months, fully addresses the question, and adheres to policy safety by not including any irrelevant or incorrect information."
+    },
+    {
+      "id": "E05",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.784,
+      "reasoning": "The answer is correct, complete, and aligns with OrbitTech's policy regarding password and authentication code requests."
+    },
+    {
+      "id": "M01",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.713,
+      "reasoning": "The answer accurately reflects the conditions for cancellation, including the status requirements and the process if the order is in Packing status. It also adheres to policy safety by not making any unsupported claims."
+    },
+    {
+      "id": "M02",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.584,
+      "reasoning": "The answer accurately reflects the requirements and payment structure for OrbitPay instalments, including the minimum purchase amount and the payment breakdown. It also correctly states that gift cards cannot be used for the initial payment, covering all necessary conditions."
+    },
+    {
+      "id": "M03",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.796,
+      "reasoning": "The answer accurately lists all non-returnable items as per the reference, covers all conditions, and adheres to policy guidelines without introducing any false premises or exceptions."
+    },
+    {
+      "id": "M04",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.701,
+      "reasoning": "The answer accurately reflects the timeframes for both the initial diagnosis and the covered repair, as well as the procedure if a part is unavailable for more than 15 business days. It covers all necessary conditions without introducing any inaccuracies or irrelevant information."
+    },
+    {
+      "id": "M05",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.733,
+      "reasoning": "The answer correctly states the conditions for a package to be considered delayed and accurately explains the policy regarding refunds and replacements during an active trace."
+    },
+    {
+      "id": "M06",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 0.75,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 0.917,
+      "overlap_overall": 0.641,
+      "reasoning": "The answer correctly outlines the steps to take if an account is compromised and an unauthorized order is confirmed. It includes all necessary actions, but the mention of cancellation procedures could be clearer regarding the conditions under which cancellation is possible."
+    },
+    {
+      "id": "M07",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.722,
+      "reasoning": "The answer accurately reflects the conditions under which a formal service complaint can be filed, includes all necessary components of the complaint, and correctly states the review timeline. It adheres to policy safety by not introducing any false premises or irrelevant information."
+    },
+    {
+      "id": "H01",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.498,
+      "reasoning": "The answer incorrectly states that the member has 45 days to return the device, which contradicts the reference answer that specifies a 21-day return window for orders placed before September 1, 2026. Additionally, it fails to mention that the days are counted from the delivery date of September 3, 2026."
+    },
+    {
+      "id": "H02",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.533,
+      "reasoning": "The answer accurately reflects the return policy, including the 14-day window, the 10% restocking fee, and the deduction of the promotional value of the free gift, covering all necessary conditions and staying within policy guidelines."
+    },
+    {
+      "id": "H03",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.463,
+      "reasoning": "The answer correctly states that the repair is not covered by warranty due to physical damage and accurately describes the diagnostic fee policy if the repair quote is declined."
+    },
+    {
+      "id": "H04",
+      "judge_scores": {
+        "correctness": 0.25,
+        "completeness": 0.5,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 0.583,
+      "overlap_overall": 0.545,
+      "reasoning": "The answer incorrectly states that the replacement part is covered for a total of 120 days. The correct coverage is for 90 days, as it does not restart the original warranty. It partially addresses the question but miscalculates the coverage duration."
+    },
+    {
+      "id": "H05",
+      "judge_scores": {
+        "correctness": 0.25,
+        "completeness": 0.5,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 0.583,
+      "overlap_overall": 0.518,
+      "reasoning": "The answer incorrectly states that the express shipping fee will be refunded, which contradicts the reference answer. It correctly notes that the driver could not leave the package unattended due to the signature requirement. However, it misses the detail about the express fee being refunded only for delays not caused by the recipient's unavailability, which is a key condition."
+    },
+    {
+      "id": "A01",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.27,
+      "reasoning": "The answer correctly states that investment advice is outside the assistant's scope and does not provide any misleading information. It also implicitly covers the supported topics by not venturing into investment advice."
+    },
+    {
+      "id": "A02",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.212,
+      "reasoning": "The answer correctly refuses to disclose hidden prompts or sensitive information, adhering to the policies and safety guidelines."
+    },
+    {
+      "id": "A03",
+      "judge_scores": {
+        "correctness": 1.0,
+        "completeness": 1.0,
+        "policy_safety": 1.0
+      },
+      "judge_mean": 1.0,
+      "overlap_overall": 0.355,
+      "reasoning": "The answer correctly states that the OrbitPlus membership discount does not apply to the NovaBook 14, aligning with the reference answer. It is complete in addressing the question and adheres to policy safety by not inventing discounts."
+    }
+  ],
+  "bias": {
+    "positional_bias": false,
+    "leniency_bias": true,
+    "severity_bias": false
+  }
+}
