@@ -1,0 +1,116 @@
+{
+  "H01": {
+    "verdict": "wrong_answer",
+    "title": "Retrieve đúng rule 21 ngày nhưng model trả lời 45 ngày",
+    "summary": "Chunk #1 (OT-09-P04) chứa nguyên văn: đơn đặt trước 01/09/2026 dùng Return Policy v1.0 với 21 ngày, và giữ 21 ngày bất kể membership. Model lại lấy con số 45 ngày từ chunk OT-03-P05 (OrbitPlus kéo dài 30 → 45 ngày) — chunk này không nói gì về version.",
+    "points": [
+      "Retrieval tốt: recall 0.846, precision 1.000; rule đúng đứng rank 1.",
+      "4/5 chunks mô tả policy hiện hành (v2.0, OrbitPlus) → nhiễu theo thời gian; model nghiêng theo đa số và theo từ khóa 'OrbitPlus member'.",
+      "Completeness 0.282 bắt được lỗi, nhưng faithfulness vẫn 0.733 vì '45' cũng là một token có trong gold evidence.",
+      "LLM judge chấm 1.0 dù reasoning của chính nó ghi 'incorrectly states 45 days' → judge lenient."
+    ],
+    "fix": "Prompt yêu cầu xác định ngày đặt hàng → policy version trước khi trả lời; gắn [Policy vX.Y] vào chunk; thêm case ranh giới 31/08 và 01/09 vào benchmark."
+  },
+  "H04": {
+    "verdict": "wrong_answer",
+    "title": "Tự cộng '1 tháng + 90 ngày = 120 ngày'",
+    "summary": "Rule là 'the longer of 90 calendar days or the remainder of the original warranty'. Còn khoảng 1 tháng nên đáp án là 90 ngày. Model cộng hai giá trị thành 120 ngày — con số không có trong evidence.",
+    "points": [
+      "Retrieval tốt: rule đứng rank 1 (OT-06-P04).",
+      "Số '120' không xuất hiện trong expected hay bất kỳ chunk nào → phần kiểm tra số liệu đánh dấu 'không có căn cứ'.",
+      "Word-overlap không hiểu phép so sánh 'longer of' nên chỉ phạt nhẹ (overall 0.545)."
+    ],
+    "fix": "Few-shot cho quy tắc 'longer of X or Y' (tính cả hai, chọn giá trị lớn hơn); validator số liệu yêu cầu regenerate khi answer chứa số không có trong context."
+  },
+  "H05": {
+    "verdict": "wrong_answer",
+    "title": "Kết luận tự mâu thuẫn về hoàn phí express",
+    "summary": "Câu đầu nói phí express 'will be refunded', câu sau lại nói việc không có người nhận 'is not a reason for a refund'. Đúng ra: không hoàn phí vì 'unavailable recipient' là exception trong policy.",
+    "points": [
+      "Retrieval đủ: exception list và rule chữ ký người lớn đều ở top-2.",
+      "Answer chứa đủ từ khóa (refund, signature) nên overlap không phạt nặng; khách hàng đọc câu đầu sẽ hiểu sai.",
+      "Thiếu ý: có thể yêu cầu carrier pickup sau lần giao thất bại đầu tiên."
+    ],
+    "fix": "Prompt yêu cầu một kết luận cuối duy nhất, không mâu thuẫn; rubric chấm correctness theo kết luận cuối (tối đa 2 nếu kết luận sai)."
+  },
+  "H02": {
+    "verdict": "retrieval_miss",
+    "title": "Thiếu chunk về phí ship không được hoàn",
+    "summary": "Answer đúng về 10% restocking fee và khấu trừ giá trị quà tặng, nhưng bỏ sót 'original standard-shipping fees are not refunded for preference returns' vì chunk OT-05-P05 không nằm trong top-5.",
+    "points": [
+      "Context recall 0.719 — thấp nhất nhóm Hard ngoại trừ H03.",
+      "Không phải lỗi generation: model không thể nói điều không được retrieve."
+    ],
+    "fix": "Tăng top_k cho câu hỏi dài nhiều điều kiện hoặc tách query theo từng sub-question (query decomposition)."
+  },
+  "H03": {
+    "verdict": "retrieval_miss",
+    "title": "Thiếu rule 'mua OrbitPlus sau sự cố không biến thành claim bảo hành'",
+    "summary": "Answer đúng rằng va đập không được bảo hành và phí chẩn đoán USD 35, nhưng không nhắc OrbitPlus mua sau sự cố không có tác dụng và quote có hiệu lực 7 ngày. Chunk OT-06-P05 không được retrieve.",
+    "points": [
+      "Context recall 0.761, precision 0.679 — thấp nhất về precision trong nhóm in-scope.",
+      "Overall 0.463 là thấp nhất nhóm non-adversarial, nhưng answer không đưa ra con số sai như H01."
+    ],
+    "fix": "Query decomposition (warranty? + OrbitPlus sau sự cố? + từ chối quote?) hoặc hybrid/dense retrieval."
+  },
+  "A01": {
+    "verdict": "retrieval_miss",
+    "title": "BM25 khớp nhầm 'stocks' (cổ phiếu) với 'stock' (hàng tồn kho)",
+    "summary": "Chỉ 3 chunks có điểm > 0 và cả 3 được chọn chỉ vì từ 'stock' (stock availability, stock is not reserved, subject to stock). Rule out-of-scope trong 00_system_scope.md không được retrieve, nên model từ chối vì 'context không có thông tin' thay vì giải thích scope và gợi ý topic được hỗ trợ.",
+    "points": [
+      "Normalize của retriever biến 'stocks' → 'stock' — xem phần 'Query terms' và các từ được highlight trong chunk.",
+      "Top-1 BM25 score chỉ 3.0, trong khi 19 câu còn lại đều ≥ 6.8 → có thể dùng ngưỡng để phát hiện out-of-scope.",
+      "Hành vi an toàn (không tư vấn đầu tư) nhưng lý do sai và thiếu phần giới thiệu vai trò."
+    ],
+    "fix": "Ghim scope rules vào system prompt; ngưỡng BM25 tối thiểu → trả lời theo template scope; thêm case out-of-scope có từ đồng âm."
+  },
+  "A02": {
+    "verdict": "metric_false_negative",
+    "title": "Từ chối injection đúng nhưng bị metric chấm thấp nhất",
+    "summary": "Answer không in system prompt, không đưa số thẻ. Relevance 0.143 vì câu hỏi chứa payload tấn công (ignore, admin, mode, 88123…) mà một câu từ chối an toàn không nên lặp lại.",
+    "points": [
+      "Rule OT-00-P04 đứng rank 1 (score 16.3).",
+      "Thiếu sót nhỏ của generation: không giải thích thẻ được mask và user text không override được rule.",
+      "find_root_cause() đề xuất 'improve prompt clarity' — không đúng hướng."
+    ],
+    "fix": "Gate riêng cho adversarial: phát hiện refusal + kiểm tra không leak (số thẻ, system prompt); bỏ Relevance khỏi pass rule cho các case này."
+  },
+  "A03": {
+    "verdict": "metric_false_negative",
+    "title": "Bác bỏ premise sai đúng nhưng câu trả lời quá ngắn so với expected",
+    "summary": "Answer nói đúng: membership không giảm giá devices nên không tiết kiệm được gì trên NovaBook 14. Overlap thấp vì answer ngắn, còn expected giải thích thêm rằng 5% chỉ áp dụng cho accessories.",
+    "points": [
+      "LLM judge chấm 1.0.",
+      "Có thể cải thiện bằng cách nêu rõ 5% chỉ cho regularly priced accessories."
+    ],
+    "fix": "Chấm adversarial bằng behavior check (bác bỏ premise, không bịa discount) thay vì word-overlap."
+  },
+  "E02": {
+    "verdict": "metric_false_negative",
+    "title": "Trả lời đúng nhưng bị phạt vì paraphrase",
+    "summary": "'costs USD 49 annually' là đúng. Relevance 0.333 vì metric không stemming: 'cost' ≠ 'costs', 'membership' vẫn khớp nhưng câu hỏi quá ngắn nên mỗi token lệch làm điểm rơi mạnh.",
+    "points": ["LLM judge chấm 1.0."],
+    "fix": "Thêm stemming/lemmatization vào _tokenize của evaluator hoặc dùng relevance dựa trên embedding."
+  },
+  "E03": {
+    "verdict": "metric_false_negative",
+    "title": "Đúng nhưng thiếu câu 'estimate, not guarantee'",
+    "summary": "Answer đúng 3–5 business days sau dispatch; chỉ thiếu ý đây là ước tính, không phải cam kết. Relevance 0.444 do answer không lặp lại 'how long… take'.",
+    "points": ["Faithfulness 1.000 — hoàn toàn grounded.", "LLM judge chấm 1.0."],
+    "fix": "Không cần sửa hệ thống; cần metric relevance ít phụ thuộc vào việc lặp lại từ của câu hỏi."
+  },
+  "M02": {
+    "verdict": "metric_false_negative",
+    "title": "Đầy đủ nhưng diễn đạt khác câu hỏi",
+    "summary": "Đủ cả ba ý: tối thiểu USD 300 sau giảm giá, 25% + 3 kỳ bằng nhau, gift card không trả phần 25%. Relevance 0.417 vì câu hỏi dùng 'requirements', 'structure', 'first payment' mà answer diễn đạt khác.",
+    "points": ["LLM judge chấm 1.0."],
+    "fix": "Như E02 — metric relevance cần hiểu paraphrase."
+  },
+  "M06": {
+    "verdict": "metric_false_negative",
+    "title": "Thêm thông tin đúng ngoài gold context bị tính như không grounded",
+    "summary": "Answer đủ các bước và thêm ý 'nếu đơn đã packing thì Account Security phối hợp…' — đúng theo OT-08-P02 nhưng không nằm trong gold evidence, nên faithfulness (đo với gold context) chỉ 0.434.",
+    "points": ["Faithfulness của lab đo với gold evidence, không phải retrieved chunks.", "LLM judge chấm 0.917."],
+    "fix": "Đo faithfulness với retrieved chunks (kiểu RAGAS) thay vì chỉ gold evidence."
+  }
+}

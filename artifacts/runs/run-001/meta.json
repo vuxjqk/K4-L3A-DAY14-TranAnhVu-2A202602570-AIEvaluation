@@ -1,0 +1,10 @@
+{
+  "id": "run-001",
+  "label": "Baseline — artifacts/actual_answers.json",
+  "source": "seed",
+  "created_at": "2026-09-30T08:18:36+00:00",
+  "generated_at": "2026-09-30T06:46:46.640858+00:00",
+  "model": "gpt-4o-mini",
+  "top_k": 5,
+  "prompt_version": "1.0"
+}

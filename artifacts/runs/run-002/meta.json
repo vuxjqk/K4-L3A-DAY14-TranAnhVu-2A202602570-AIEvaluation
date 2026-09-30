@@ -1,0 +1,10 @@
+{
+  "id": "run-002",
+  "label": "Prompt 1.1 experiment",
+  "source": "live",
+  "created_at": "2026-09-30T08:26:30+00:00",
+  "generated_at": "2026-09-30T08:26:30.856695+00:00",
+  "model": "gpt-4o-mini",
+  "top_k": 5,
+  "prompt_version": "1.1"
+}

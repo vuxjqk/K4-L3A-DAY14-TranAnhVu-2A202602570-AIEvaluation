@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OrbitTech Eval Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">◎</span>
+    <div>
+      <h1>OrbitTech Eval Lab</h1>
+      <p class="muted small">Day 14 · RAG system under evaluation + evaluation core (<code>template.py</code>)</p>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="playground" role="tab">Playground</button>
+    <button class="tab" data-tab="explorer" role="tab">Failure Explorer</button>
+    <button class="tab" data-tab="compare" role="tab">So sánh</button>
+    <button class="tab" data-tab="gate" role="tab">Quality Gate</button>
+  </nav>
+  <div class="topbar-right">
+    <label class="small muted" for="run-select">Run đang xem</label>
+    <select id="run-select"></select>
+    <span id="key-status" class="pill"></span>
+  </div>
+</header>
+
+<main>
+  <!-- ============================ Playground ============================ -->
+  <section id="tab-playground" class="tab-panel active">
+    <div class="layout-2">
+      <aside class="card controls">
+        <h2>Câu hỏi</h2>
+        <div class="segmented" id="source-toggle">
+          <button class="seg active" data-source="golden">Golden dataset</button>
+          <button class="seg" data-source="custom">Tự nhập</button>
+        </div>
+
+        <div id="golden-input">
+          <label for="case-select">Chọn case</label>
+          <select id="case-select"></select>
+          <p id="case-question" class="question-preview"></p>
+        </div>
+
+        <div id="custom-input" hidden>
+          <label for="custom-question">Câu hỏi mới</label>
+          <textarea id="custom-question" rows="4" placeholder="Ví dụ: Can I return opened AeroBuds Pro ear tips?"></textarea>
+          <details id="reference-box">
+            <summary>Thêm reference answer để chấm điểm (tuỳ chọn)</summary>
+            <textarea id="custom-reference" rows="4" placeholder="Câu trả lời chuẩn bạn tự viết từ corpus…"></textarea>
+            <p class="small muted">Không có reference thì hệ thống chỉ hiển thị answer và chunks, không chấm Faithfulness / Completeness.</p>
+          </details>
+        </div>
+
+        <h3>Chế độ</h3>
+        <div class="segmented" id="mode-toggle">
+          <button class="seg active" data-mode="saved">Answer đã lưu</button>
+          <button class="seg" data-mode="live">Chạy live</button>
+        </div>
+        <p id="mode-hint" class="small muted"></p>
+
+        <fieldset id="live-options" disabled>
+          <div class="row">
+            <label>top_k
+              <select id="opt-topk"><option>3</option><option selected>5</option><option>7</option></select>
+            </label>
+            <label>Prompt
+              <select id="opt-prompt">
+                <option value="1.0">1.0 (baseline)</option>
+                <option value="1.1">1.1 (thử nghiệm fix)</option>
+              </select>
+            </label>
+          </div>
+          <label class="check"><input type="checkbox" id="opt-rerank"> Rerank theo overlap với câu hỏi</label>
+        </fieldset>
+
+        <button id="run-btn" class="primary">Run</button>
+      </aside>
+
+      <div class="results" id="playground-result">
+        <div class="empty">Chọn một câu hỏi rồi bấm <b>Run</b>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= Failure Explorer ========================= -->
+  <section id="tab-explorer" class="tab-panel">
+    <div class="card">
+      <div class="filters">
+        <div>
+          <span class="label">Difficulty</span>
+          <div class="chips" id="filter-difficulty"></div>
+        </div>
+        <div>
+          <span class="label">Failure type</span>
+          <div class="chips" id="filter-failure"></div>
+        </div>
+        <div>
+          <span class="label">Trạng thái</span>
+          <div class="chips" id="filter-status"></div>
+        </div>
+      </div>
+      <div id="explorer-summary" class="summary-row"></div>
+      <div class="table-wrap">
+        <table class="data" id="explorer-table"></table>
+      </div>
+    </div>
+    <div id="explorer-detail"></div>
+  </section>
+
+  <!-- ============================= Compare ============================= -->
+  <section id="tab-compare" class="tab-panel">
+    <div class="card">
+      <div class="segmented" id="compare-toggle">
+        <button class="seg active" data-compare="rerank">Bật/tắt reranking</button>
+        <button class="seg" data-compare="runs">Hai lần chạy</button>
+      </div>
+
+      <div id="compare-rerank">
+        <div class="row">
+          <label>Case <select id="cmp-case"></select></label>
+          <label>top_k <select id="cmp-topk"><option>3</option><option selected>5</option><option>7</option></select></label>
+          <button id="cmp-all-btn" class="ghost">Chạy cho cả 20 case</button>
+        </div>
+        <p class="small muted">Reranking chỉ đổi <b>thứ tự</b> của cùng một tập chunk (không gọi OpenAI). Context Recall phải giữ nguyên; Context Precision (AP@K) thay đổi theo vị trí chunk liên quan.</p>
+        <div id="cmp-rerank-result"></div>
+        <div id="cmp-all-result"></div>
+      </div>
+
+      <div id="compare-runs" hidden>
+        <div class="row">
+          <label>Run A <select id="cmp-run-a"></select></label>
+          <label>Run B <select id="cmp-run-b"></select></label>
+        </div>
+        <div id="cmp-runs-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== Quality Gate =========================== -->
+  <section id="tab-gate" class="tab-panel">
+    <div class="layout-2">
+      <aside class="card controls">
+        <h2>Quality Gate</h2>
+        <label>Baseline <select id="gate-baseline"></select></label>
+        <label>Candidate <select id="gate-candidate"></select></label>
+        <button id="gate-btn" class="primary">Chạy gate trên benchmark đã lưu</button>
+        <p class="small muted">Block khi Faithfulness / Relevance / Completeness trung bình giảm &gt; 0.05, hoặc một case Hard/Adversarial chuyển từ pass sang fail. Recall, Precision và pass rate chỉ cảnh báo.</p>
+
+        <hr>
+        <h3>Tạo run mới (live)</h3>
+        <label>Prompt
+          <select id="new-run-prompt">
+            <option value="1.0">1.0 (baseline)</option>
+            <option value="1.1">1.1 (version-by-date + scope rules)</option>
+          </select>
+        </label>
+        <label>top_k <select id="new-run-topk"><option>3</option><option selected>5</option><option>7</option></select></label>
+        <label>Nhãn <input id="new-run-label" type="text" placeholder="vd. Prompt 1.1 experiment"></label>
+        <button id="new-run-btn" class="ghost">Sinh 20 answers + đánh giá</button>
+        <p class="small muted">Gọi OpenAI 20 lần (~30–60 giây). Run được lưu trong <code>artifacts/runs/</code>, baseline không bị ghi đè.</p>
+      </aside>
+      <div class="results" id="gate-result">
+        <div class="empty">Chọn baseline và candidate rồi chạy gate.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
