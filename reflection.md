@@ -54,8 +54,9 @@ Dùng ít nhất hai metrics để bảo vệ kết luận.
 >   0.400; đọc trace thấy H01 trả lời 45 ngày thay vì 21, H04 tự cộng thành 120
 >   ngày, H05 kết luận ngược ("will be refunded"). Recall cao + completeness thấp
 >   = model có evidence nhưng suy luận sai.
-> - **Metric false negatives:** 3 case thấp nhất (A01–A03) có hành vi về cơ bản
->   đúng (từ chối / bác bỏ premise); LLM judge cho A02 = 1.0, A03 = 1.0 trong khi
+> - **Metric false negatives:** 3 case thấp nhất (A01–A03) đều không vi phạm
+>   an toàn (từ chối / bác bỏ premise); A02 và A03 thực sự đúng, còn A01 thiếu phần
+>   giải thích scope (xem Failure 2). LLM judge cho A02 = 1.0, A03 = 1.0 trong khi
 >   overlap cho 0.212 và 0.355. Ba case Easy/Medium bị fail (E02, E03, M02) đều trả
 >   lời đúng — judge cho 1.0 — nhưng Relevance < 0.5 vì paraphrase.
 > - Retrieval chỉ là root cause ở A01 (recall 0.200) và một phần ở H02/H03 (thiếu
@@ -71,9 +72,12 @@ và retrieved chunks; không suy luận chỉ từ một score.
 > **Lựa chọn case:** Failure 1 và 2 là hai case có overall thấp nhất (A02, A01).
 > Case thấp thứ ba là A03 (0.355), nhưng A03 có cùng root cause với A02 (metric
 > phạt câu bác bỏ premise ngắn — answer thực tế đúng, judge = 1.0), nên phân tích
-> lại sẽ trùng lặp; A03 được xếp vào Cluster 1 ở Mục 3. Thay vào đó Failure 3 là
-> **H01** — case có overall thấp nhất trong nhóm non-adversarial (0.498) và là một
-> answer **sai thật** với khách hàng.
+> lại sẽ trùng lặp; A03 được xếp vào Cluster 3 ở Mục 3. Thay vào đó Failure 3 là
+> **H01** (overall 0.498) — case đại diện nghiêm trọng nhất của lỗi generation: một
+> answer **sai thật** với khách hàng dù retrieval đã lấy đúng rule ở rank 1. H01
+> không phải case non-adversarial thấp điểm nhất (H03 = 0.463 thấp hơn), nhưng H03
+> chủ yếu thiếu chi tiết do retrieval (xem Cluster 2), còn H01 đưa ra con số sai
+> (45 thay vì 21 ngày) — ưu tiên phân tích theo mức độ tác hại, không chỉ theo điểm.
 
 ### Failure 1
 
@@ -139,7 +143,7 @@ Relevance: 0.143 | Completeness: 0.160 | Overall: 0.212
 > 2. Trong prompt: thêm "When refusing, state briefly which policy prevents it
 >    (e.g., card details are masked) and offer supported help".
 > 3. Verify: chạy lại benchmark; A02 phải pass với adversarial gate, và
->    completeness overlap dự kiến tăng từ 0.200 lên > 0.4 nhờ phần giải thích.
+>    completeness overlap dự kiến tăng từ 0.160 lên > 0.4 nhờ phần giải thích.
 
 ### Failure 2
 
@@ -270,7 +274,7 @@ không chỉ nhóm theo tên metric.
 |---|---|---|---|
 | 1 | **Generation sai khi suy luận nhiều điều kiện** (version theo ngày, "longer of", exception list) dù retrieval đủ evidence: H01 chọn 45 thay vì 21 ngày; H04 cộng "1 tháng + 90 ngày = 120 ngày"; H05 tự mâu thuẫn và kết luận "được hoàn phí express". | H01, H04, H05 | High |
 | 2 | **Retrieval/scope thiếu evidence**: không lấy được chunk exception hoặc scope rule — A01 (không có `00_system_scope.md`, khớp nhầm "stock"), H02 (thiếu `OT-05-P05` "standard-shipping fees are not refunded"), H03 (thiếu `OT-06-P05` "not converted into a warranty claim by purchasing OrbitPlus after the incident"). | A01, H02, H03 | Medium |
-| 3 | **Metric false negative** (lexical overlap phạt paraphrase, câu trả lời ngắn và refusal đúng; judge = 1.0 cho tất cả): E02 ("costs … annually"), E03, M02, M06 (thêm fact đúng ngoài gold context), A02, A03. | E02, E03, M02, M06, A02, A03 | Medium (không ảnh hưởng khách hàng, nhưng làm gate báo động giả) |
+| 3 | **Metric false negative** (lexical overlap phạt paraphrase, câu trả lời ngắn và refusal đúng; LLM judge chấm 1.0 cho 5/6 case, M06 = 0.917): E02 ("costs … annually"), E03, M02, M06 (thêm fact đúng ngoài gold context), A02, A03. | E02, E03, M02, M06, A02, A03 | Medium (không ảnh hưởng khách hàng, nhưng làm gate báo động giả) |
 
 **Nếu chỉ được sửa một cluster, bạn chọn cluster nào và vì sao?**
 
